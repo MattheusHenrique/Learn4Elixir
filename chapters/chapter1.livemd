@@ -1200,11 +1200,7 @@ titulo = second_comment["name"]
 1. Extrair o comentário de **id** `11` do produto de **productId** `3` e criar um novo mapa que contêm todos os valores desse item porém mudando o `email` para `contato@foobar.br`.
 
 ```elixir
-sistema_solar = %{
-  estrela: "Sol",
-  nome: "Sistema Solar",
-  planetas: [mercurio, venus, terra, marte, jupiter, saturno, urano, netuno]
-}
+nil
 ```
 
 1. Extrair o **body** do terceiro comentário.
