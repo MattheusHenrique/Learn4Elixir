@@ -12,18 +12,6 @@ Neste capitulo iremos nos aprofundar em Estruturas de Controle.
 
 ## If
 
-A estrutura 'if' é usada para executar um bloco de código se uma condição for avaliada como verdadeira ou algum valor 'truthy'. Se a condição for avaliada como falsa ou algum valor 'falsy', o bloco de código não será executado.
-
-<!-- livebook:{"force_markdown":true} -->
-
-```elixir
-if condition do
-  # Código a ser executado se a condição for verdadeira
-end
-```
-
-Exemplo:
-
 ```elixir
 age = 25
 
@@ -382,7 +370,6 @@ Para completar esta tarefa, você precisará usar estruturas condicionais, como 
 ```elixir
 defmodule ElixGames.Encontro do
   def determina_encontro(localizacao, probabilidade) do
-    # Implemente a lógica de determinação do resultado do encontro aqui
   end
 end
 ```
@@ -413,9 +400,7 @@ A seguir está um exemplo de como as informações dos clientes estão atualment
 1. Crie uma função chamada `parsear_clientes/1` que receba a string de informações de clientes e a divida em uma lista de informações de clientes formatadas. Use o sigil `~s` para fazer isso.
 
 ```elixir
-def parsear_clientes(informacao) do
-  # A fazer
-end
+
 ```
 
 ```elixir
@@ -425,9 +410,7 @@ end
 1. Crie outra função chamada `extrair_nomes/1` que receba a lista de informações de clientes e retorne uma lista com os nomes dos clientes.
 
 ```elixir
-def extrair_nomes(clientes) do
-  # A fazer
-end
+
 ```
 
 ```elixir
@@ -437,9 +420,7 @@ end
 1. Crie uma terceira função chamada `filtrar_clientes_por_idade/2` que receba a lista de informações de clientes e uma idade mínima e retorne uma lista com as informações dos clientes que têm pelo menos a idade especificada.
 
 ```elixir
-def filtrar_clientes_por_idade(clientes, idade_minima) do
-  # A fazer
-end
+
 ```
 
 ```elixir
@@ -477,6 +458,58 @@ calcula_total(produtos, cliente) # deve retornar 243.00
 
 ```elixir
 defmodule Ecommerce do
-  # A fazer
+  def calcula_total(produtos, cliente) do
+    calcula_bonus(cliente, valor_total(produtos))
+  end
+
+  def valor_total(produtos) do
+    Enum.reduce(produtos, 0, fn mapa, acc ->
+      acc + mapa[:preco] * mapa[:quantidade]
+    end)
+  end
+
+  def cupom?(cliente, valor) do
+    if cliente[:cupom] == "UBL10" do
+      valor * 0.9
+    end
+  end
+
+  def cliente?(cliente, valor) do
+    if cliente[:membro_clube] do
+      valor * 0.95
+    end
+  end
+
+  def desconto?(valor) do
+    cond do
+      valor > 1000 ->
+        valor * 0.80
+
+      valor > 500 ->
+        valor * 0.85
+
+      valor > 200 ->
+        valor * 0.90
+    end
+  end
+
+  def calcula_bonus(cliente, valor_total) do
+    desconto_aplicado = desconto?(valor_total)
+    cupom_aplicado = cupom?(cliente, desconto_aplicado)
+    cliente?(cliente, cupom_aplicado)
+  end
 end
+
+produtos = [
+  %{nome: "Ração para gatos", preco: 50.00, quantidade: 2},
+  %{nome: "Brinquedo para cachorro", preco: 30.00, quantidade: 1},
+  %{nome: "Aquário", preco: 200.00, quantidade: 1}
+]
+
+cliente = %{
+  membro_clube: true,
+  cupom: "UBL10"
+}
+
+Ecommerce.calcula_total(produtos, cliente)
 ```
