@@ -263,7 +263,35 @@ Vamos criar um sistema simples para rastrear o número de acessos a uma página 
 Escreva sua solução na célula abaixo. Se necessário, crie mais células.
 
 ```elixir
-"Coloque aqui sua solução"
+defmodule Acesso do
+  def inicia do
+    {:ok, agent} = Agent.start(fn -> [] end)
+    IO.puts("Agente criado com pid #{inspect(agent)} e estado 0")
+    agent
+  end
+
+  def obter_acessos(agent) do
+    agent = Agent.get(agent, fn acessos -> Enum.reverse(acessos) end)
+    IO.puts("Acessos #{inspect(agent)}")
+  end
+
+  def registrar_acesso(agent) do
+    Agent.update(agent, fn acessos -> [{:data_hora, DateTime.now("Etc/UTC")} | acessos] end)
+  end
+
+  def encerra(agent) do
+    Agent.stop(agent)
+    IO.puts("Agente com pid #{inspect(agent)} foi encerrado.")
+  end
+end
+
+meuagente = Acesso.inicia()
+Acesso.obter_acessos(meuagente)
+Acesso.registrar_acesso(meuagente)
+Acesso.obter_acessos(meuagente)
+Acesso.registrar_acesso(meuagente)
+Acesso.obter_acessos(meuagente)
+Acesso.encerra(meuagente)
 ```
 
 ## Exercício 2
@@ -285,7 +313,22 @@ Considere o caso em que a data de nascimento fornecida está no futuro em relaç
 Este exercício permitirá que você pratique a manipulação de datas em Elixir, incluindo o cálculo de anos bissextos, a diferença entre datas e a formatação dos resultados.
 
 ```elixir
-def calcular_idade(data_aniversario) do
-  # Escreva aqui a sua solução
+defmodule CalculadoraIdade do
+  def calcular_idade({ano_nascimento, mes_nascimento, dia_nascimento}) do
+    {ano_atual, mes_atual, dia_atual} = Date.utc_today()
+
+    idade =
+      if {mes_nascimento, dia_nascimento} <= {mes_atual, dia_atual} do
+        ano_atual - ano_nascimento
+      else
+        ano_atual - ano_nascimento - 1
+      end
+
+    if {mes_nascimento, dia_nascimento} == {mes_atual, dia_atual} do
+      "Hoje você completa #{idade} anos, parabéns pelo aniversário!"
+    else
+      "#{idade} anos"
+    end
+  end
 end
 ```
